@@ -163,6 +163,7 @@ public class AirportsSQLiteHelper extends SQLiteOpenHelper {
             toggleFavorite = "true";
         }
 
+        Log.d(TAG, "VALUE OF FAVORITES: " + toggleFavorite);
         ContentValues values = new ContentValues();
         values.put(COL_FAVORITE, toggleFavorite);
         db.update(AIRPORTS_TABLE_NAME, values, COL_ID + " = ?", new String[]{String.valueOf(id)});

@@ -15,11 +15,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"></ListView>
 
-
-    <Button
-        android:id="@+id/detailed_favorite_button"
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/detailed_favorite_fab_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Fav"/>
+        android:baselineAlignBottom="true"
+        android:layout_margin="16dp"
+        android:tint="#A2FFC5"
+        android:src="@android:drawable/ic_input_add"/>
 
 </LinearLayout>

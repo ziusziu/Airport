@@ -3,6 +3,7 @@ package siu.example.com.airport;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -20,7 +21,7 @@ public class DetailedActivity extends AppCompatActivity {
     private static ListView mDeatilListView;
     protected static AirportsSQLiteHelper mAirportDb;
     protected static CursorAdapter mDetailedCursorAdapter;
-    private static Button mFavButton;
+    private static FloatingActionButton mFavFabButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +35,7 @@ public class DetailedActivity extends AppCompatActivity {
 
         showDetailedSearchResults(id);
 
-        onFavButtonClick(id);
+        onFavFabButtonClick(id);
 
     }
 
@@ -74,15 +75,16 @@ public class DetailedActivity extends AppCompatActivity {
         mDeatilListView.setAdapter(mDetailedCursorAdapter);
     }
 
-    private void onFavButtonClick(final long id){
-        mFavButton = (Button)findViewById(R.id.detailed_favorite_button);
-        mFavButton.setOnClickListener(new View.OnClickListener() {
+    private void onFavFabButtonClick(final long id){
+        mFavFabButton = (FloatingActionButton)findViewById(R.id.detailed_favorite_fab_button);
+        mFavFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAirportDb.updateFavorites(id);
             }
         });
     }
+
 
 
 }
