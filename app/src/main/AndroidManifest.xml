@@ -22,7 +22,8 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".FlightResultsActivity">
+        <activity android:name=".FlightResultsActivity"
+            android:parentActivityName=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
             </intent-filter>
@@ -47,7 +48,8 @@
                 android:name="com.google.android.geo.API_KEY"
                 android:value="@string/google_maps_key" />
         </activity>
-        <activity android:name=".DetailedActivity"></activity>
+        <activity android:name=".DetailedActivity"
+            android:parentActivityName=".FlightResultsActivity"></activity>
     </application>
 
 </manifest>

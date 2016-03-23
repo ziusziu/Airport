@@ -21,7 +21,6 @@ public class DetailedActivity extends AppCompatActivity {
     protected static AirportsSQLiteHelper mAirportDb;
     protected static CursorAdapter mDetailedCursorAdapter;
     private static Button mFavButton;
-    //private static long id;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,8 +35,6 @@ public class DetailedActivity extends AppCompatActivity {
         showDetailedSearchResults(id);
 
         onFavButtonClick(id);
-
-
 
     }
 

@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -28,7 +29,6 @@ public class FlightResultsActivity extends AppCompatActivity {
     private static ListView mListView;
 
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -39,14 +39,34 @@ public class FlightResultsActivity extends AppCompatActivity {
         Intent receivedIntent = getIntent();
         String[] searchTerms = receivedIntent.getStringArrayExtra(MainActivity.INTENT_KEY);
 
+
+        String searchTerm = PreferenceManager.getDefaultSharedPreferences(FlightResultsActivity.this)
+                .getString(MainActivity.SHARED_PREFERENCES_SEARCHTERM, "California");
+        Log.d(TAG,"==================>"+ searchTerm);
+
+
         if(searchTerms != null) {
-            showSearchResults(searchTerms);
+            showSearchResults(searchTerm);
         }else{
             handleMenuSearchIntent(getIntent());
         }
 
         onItemClick();
 
+    }
+
+    @Override
+    protected void onResume() {
+
+        String searchTerm = PreferenceManager.getDefaultSharedPreferences(FlightResultsActivity.this)
+                .getString(MainActivity.SHARED_PREFERENCES_SEARCHTERM, "California");
+        Log.d(TAG,"==================>"+ searchTerm);
+
+        if(searchTerm != null) {
+            showSearchResults(searchTerm);
+        }
+        onItemClick();
+        super.onResume();
     }
 
     @Override
@@ -82,7 +102,7 @@ public class FlightResultsActivity extends AppCompatActivity {
         }
     }
 
-    private void showSearchResults(String[] searchTerms){
+    private void showSearchResults(String searchTerms){
         Cursor cursor = mAirportDb.searchAirportsList(searchTerms);
         mCursorAdapter = new CursorAdapter(getApplicationContext(), cursor, 0) {
             @Override
@@ -113,8 +133,5 @@ public class FlightResultsActivity extends AppCompatActivity {
             }
         });
     }
-
-
-
 
 }

@@ -3,6 +3,7 @@ package siu.example.com.airport;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
     protected static final String INTENT_KEY = "search_terms";
+    protected static final String SHARED_PREFERENCES_SEARCHTERM = "shared_pref_search_term";
 
     private static AirportsSQLiteHelper mAirportDb;
 
@@ -34,6 +36,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
         setViews();
@@ -43,16 +46,22 @@ public class MainActivity extends AppCompatActivity {
 
         onSearchButtonClick();
 
-        displayFavorites();
+
 
         onItemClick();
 
     }
 
+
+    @Override
+    protected void onResume() {
+        displayFavorites();
+        super.onResume();
+    }
+
+
     private void setViews(){
         mNameEditText = (EditText)findViewById(R.id.main_name_editText);
-//        mCityEditText = (EditText)findViewById(R.id.main_city_editText);
-//        mStateEditText = (EditText)findViewById(R.id.main_state_editText);
         mFligthSeachButton = (Button)findViewById(R.id.main_flightInput_search_button);
         mFavoritesListView = (ListView)findViewById(R.id.main_favorites_listView);
     }
@@ -63,9 +72,13 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String[] searchTerms = {
                         mNameEditText.getText().toString(),
-                       // mCityEditText.getText().toString(),
-                       // mStateEditText.getText().toString()
                 };
+
+                PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
+                        .edit()
+                        .putString(SHARED_PREFERENCES_SEARCHTERM, searchTerms[0])
+                        .commit();
+
 
                 Intent mFlightResultsIntent = new Intent(MainActivity.this, FlightResultsActivity.class);
                 mFlightResultsIntent.putExtra(INTENT_KEY, searchTerms);

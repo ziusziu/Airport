@@ -173,17 +173,9 @@ public class AirportsSQLiteHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getReadableDatabase();
 
         String searchName = searchTerms[0];
-//        String searchCity = searchTerms[1];
-//        String searchState = searchTerms[2];
         if(searchName.isEmpty()){
             searchName = null;
         }
-//        if(searchCity.isEmpty()){
-//            searchCity = null;
-//        }
-//        if(searchState.isEmpty()){
-//            searchState = null;
-//        }
 
         Cursor cursor = db.query(AIRPORTS_TABLE_NAME, // a. table
                 AIRPORTS_COLUMNS, // b. column names
@@ -197,6 +189,30 @@ public class AirportsSQLiteHelper extends SQLiteOpenHelper {
 
         return cursor;
     }
+
+
+    protected Cursor searchAirportsList(String searchTerms){
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String searchName = searchTerms;
+        if(searchName.isEmpty()){
+            searchName = null;
+        }
+
+        Cursor cursor = db.query(AIRPORTS_TABLE_NAME, // a. table
+                AIRPORTS_COLUMNS, // b. column names
+                COL_NAME + " LIKE ? OR " + COL_CITY + " LIKE ? OR " + COL_STATE + " LIKE ?", // c. selections
+                //new String[]{"%" + searchName + "%", "%" + searchCity + "%", "%" + searchState + "%"}, // d. selection args
+                new String[]{"%" + searchName + "%", "%" + searchName + "%", "%" + searchName + "%"}, // d. selection args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null);// h. limit
+
+        return cursor;
+    }
+
+
 
     protected long insertAirport(String name, Double latitude, Double longitude, String address, String city, String state, int zip, String description, String favorite){
 

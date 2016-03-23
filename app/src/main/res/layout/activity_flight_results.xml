@@ -29,6 +29,7 @@
         android:layout_weight=".25"
         android:orientation="vertical"-->
 
+
         <ListView
             android:id="@+id/airport_listView"
             android:layout_width="match_parent"

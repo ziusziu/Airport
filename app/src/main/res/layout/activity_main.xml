@@ -22,20 +22,6 @@ Accent - Green  A200 #68EFAD
         android:layout_height="wrap_content"
         android:hint="Airport Name"/>
 
-    <!--EditText
-        android:id="@+id/main_city_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/main_name_editText"
-        android:hint="City Name"/>
-
-    <EditText
-        android:id="@+id/main_state_editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/main_city_editText"
-        android:hint="State Name"/-->
-
     <Button
         android:id="@+id/main_flightInput_search_button"
         android:layout_width="wrap_content"
