@@ -32,6 +32,7 @@ public class FlightResultsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_flight_results);
 
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
