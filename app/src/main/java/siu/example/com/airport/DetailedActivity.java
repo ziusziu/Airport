@@ -3,6 +3,7 @@ package siu.example.com.airport;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -27,6 +28,12 @@ public class DetailedActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed);
 
+        mFavFabButton = (FloatingActionButton)findViewById(R.id.detailed_favorite_fab_button);
+
+
+        //mFavFabButton.setBackgroundResource(R.drawable.ic_favorite_border_black_18dp);
+
+
         Intent detailedIntent = getIntent();
         long id = detailedIntent.getLongExtra(Utils.INTENT_DETAILED_KEY, -1);
 
@@ -36,6 +43,9 @@ public class DetailedActivity extends AppCompatActivity {
 
         onFavFabButtonClick(id);
 
+        Log.d(TAG, "BEFOR CHECK STATUS     " + id);
+        checkFavButtonStatus(id);
+        Log.d(TAG, "AFTER CHECK STATUS     " + id);
     }
 
 
@@ -88,15 +98,36 @@ public class DetailedActivity extends AppCompatActivity {
     }
 
     private void onFavFabButtonClick(final long id){
-        mFavFabButton = (FloatingActionButton)findViewById(R.id.detailed_favorite_fab_button);
         mFavFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 mAirportDb.updateAirportFavorite(id);
+                checkFavButtonStatus(id);
             }
         });
     }
 
+    private static void checkFavButtonStatus(long id){
+        Cursor cursor = mAirportDb.searchAirport(id);
+        cursor.moveToFirst();
+        String checkFav = cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_FAVORITE));
+        switch(checkFav){
+            case "true":
+                Log.d(TAG, "FAVORITE TRUE");
+                mFavFabButton.clearColorFilter();
+                mFavFabButton.setImageResource(R.drawable.ic_favorite_black_18dp);
+                int color = Color.parseColor("#AEB118");
+                mFavFabButton.setColorFilter(color);
+                break;
+            case "false":
+                Log.d(TAG, "FAVORITE FALSE");
+                mFavFabButton.clearColorFilter();
+                mFavFabButton.setImageResource(R.drawable.ic_favorite_border_black_18dp);
+                int color2 = Color.parseColor("#AEB118");
+                mFavFabButton.setColorFilter(color2);
+                break;
+        }
+    }
 
 
 }
