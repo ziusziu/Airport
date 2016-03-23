@@ -44,7 +44,7 @@ public class DetailedActivity extends AppCompatActivity {
         onFavFabButtonClick(id);
 
         Log.d(TAG, "BEFOR CHECK STATUS     " + id);
-        checkFavButtonStatus(id);
+        getFavButtonStatus(id);
         Log.d(TAG, "AFTER CHECK STATUS     " + id);
     }
 
@@ -102,29 +102,28 @@ public class DetailedActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 mAirportDb.updateAirportFavorite(id);
-                checkFavButtonStatus(id);
+                getFavButtonStatus(id);
             }
         });
     }
 
-    private static void checkFavButtonStatus(long id){
+    private static void getFavButtonStatus(long id){
         Cursor cursor = mAirportDb.searchAirport(id);
         cursor.moveToFirst();
         String checkFav = cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_FAVORITE));
+        int color = Color.parseColor(Utils.FAB_BUTTON_COLOR);
         switch(checkFav){
-            case "true":
+            case Utils.ADD_TO_FAVORITES:
                 Log.d(TAG, "FAVORITE TRUE");
                 mFavFabButton.clearColorFilter();
                 mFavFabButton.setImageResource(R.drawable.ic_favorite_black_18dp);
-                int color = Color.parseColor("#AEB118");
                 mFavFabButton.setColorFilter(color);
                 break;
-            case "false":
+            case Utils.REMOVE_FROM_FAVORITES:
                 Log.d(TAG, "FAVORITE FALSE");
                 mFavFabButton.clearColorFilter();
                 mFavFabButton.setImageResource(R.drawable.ic_favorite_border_black_18dp);
-                int color2 = Color.parseColor("#AEB118");
-                mFavFabButton.setColorFilter(color2);
+                mFavFabButton.setColorFilter(color);
                 break;
         }
     }

@@ -35,9 +35,11 @@
         android:layout_height="wrap_content"
         android:baselineAlignBottom="true"
         android:layout_margin="16dp"
+        android:scaleType="fitCenter"
         app:layout_anchor="@id/airport_detail_listView"
         app:layout_anchorGravity="top|right|end"
         app:fabSize="mini"
-        app:backgroundTint="#A2FFC5"/>
+        app:backgroundTint="#68EFAD"/>
 
+    <!--#A2FFC5-->
 </android.support.design.widget.CoordinatorLayout>
