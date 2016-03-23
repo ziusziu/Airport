@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -29,7 +28,7 @@ public class DetailedActivity extends AppCompatActivity {
         setContentView(R.layout.activity_detailed);
 
         Intent detailedIntent = getIntent();
-        long id = detailedIntent.getLongExtra(FlightResultsActivity.INTENT_DETAILED_KEY, -1);
+        long id = detailedIntent.getLongExtra(Utils.INTENT_DETAILED_KEY, -1);
 
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
 
@@ -60,14 +59,27 @@ public class DetailedActivity extends AppCompatActivity {
                 TextView airportZipDetailedTextView = (TextView)view.findViewById(R.id.airport_detailedZip_textview);
                 TextView airportDescriptionDetailedTextView = (TextView)view.findViewById(R.id.airport_detailedDescription_textview);
 
-                airportNameDetailedTextView.setText("Name: "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_NAME)));
-                airportLatitudeDetailedTextView.setText("Latitude: "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_LATITUDE)));
-                airportLongitudeDetailedTextView.setText("Longitude: "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_LONGITUDE)));
-                airportAddressDetailedTextView.setText("Address: "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_ADDRESS)));
-                airportCityDetailedTextView.setText("City: "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_CITY)));
-                airportStateDetailedTextView.setText("State: "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_STATE)));
-                airportZipDetailedTextView.setText("Zip: "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_ZIP)));
-                airportDescriptionDetailedTextView.setText("Description: "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_DESCRIPTION)));
+                Log.d(TAG, "  LATITUDE   "+cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_LATITUDE)));
+
+                Airport airportResult = new Airport(
+                        cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_NAME)),
+                        Double.parseDouble(cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_LATITUDE))),
+                        Double.parseDouble(cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_LONGITUDE))),
+                        cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_ADDRESS)),
+                        cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_CITY)),
+                        cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_STATE)),
+                        Integer.parseInt(cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_ZIP))),
+                        cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_DESCRIPTION)),
+                        cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_FAVORITE)));
+
+                airportNameDetailedTextView.setText("Name: "+ airportResult.getName());
+                airportLatitudeDetailedTextView.setText("Latitude: "+ airportResult.getLatitude());
+                airportLongitudeDetailedTextView.setText("Longitude: "+ airportResult.getLongitude());
+                airportAddressDetailedTextView.setText("Address: "+ airportResult.getAddress());
+                airportCityDetailedTextView.setText("City: "+ airportResult.getCity());
+                airportStateDetailedTextView.setText("State: "+ airportResult.getState());
+                airportZipDetailedTextView.setText("Zip: "+ airportResult.getZip());
+                airportDescriptionDetailedTextView.setText("Description: "+ airportResult.getDescription());
             }
         };
 
@@ -80,7 +92,7 @@ public class DetailedActivity extends AppCompatActivity {
         mFavFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mAirportDb.updateFavorites(id);
+                mAirportDb.updateAirportFavorite(id);
             }
         });
     }

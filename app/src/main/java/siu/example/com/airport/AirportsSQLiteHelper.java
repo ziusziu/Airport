@@ -79,7 +79,7 @@ public class AirportsSQLiteHelper extends SQLiteOpenHelper {
         this.onCreate(db);
     }
 
-    protected Cursor getAirportsList(){
+    protected Cursor getAll(){
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(AIRPORTS_TABLE_NAME, // a. table
@@ -129,7 +129,7 @@ public class AirportsSQLiteHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    protected Cursor getFavorites(){
+    protected Cursor getFavoriteAirports(){
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.query(AIRPORTS_TABLE_NAME, // a. table
                 AIRPORTS_COLUMNS, // b. column names
@@ -142,7 +142,7 @@ public class AirportsSQLiteHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-    protected void updateFavorites(long id){
+    protected void updateAirportFavorite(long id){
         Log.d(TAG, "ID THAT IS SENT FOR COLUM SEARCH: " +id);
         SQLiteDatabase db = this.getWritableDatabase();
 
@@ -213,20 +213,18 @@ public class AirportsSQLiteHelper extends SQLiteOpenHelper {
         return cursor;
     }
 
-
-
-    protected long insertAirport(String name, Double latitude, Double longitude, String address, String city, String state, int zip, String description, String favorite){
+    protected long insertAirport(Airport airport){
 
         ContentValues values = new ContentValues();
-        values.put(COL_NAME, name);
-        values.put(COL_LATITUDE, latitude);
-        values.put(COL_LONGITUDE, longitude);
-        values.put(COL_ADDRESS, address);
-        values.put(COL_CITY, city);
-        values.put(COL_STATE, state);
-        values.put(COL_ZIP, zip);
-        values.put(COL_DESCRIPTION, description);
-        values.put(COL_FAVORITE, favorite);
+        values.put(COL_NAME, airport.getName());
+        values.put(COL_LATITUDE, airport.getLatitude());
+        values.put(COL_LONGITUDE, airport.getLongitude());
+        values.put(COL_ADDRESS, airport.getAddress());
+        values.put(COL_CITY, airport.getCity());
+        values.put(COL_STATE, airport.getState());
+        values.put(COL_ZIP, airport.getZip());
+        values.put(COL_DESCRIPTION, airport.getDescription());
+        values.put(COL_FAVORITE, airport.getFavorite());
 
         SQLiteDatabase db = this.getWritableDatabase();
         long returnId = db.insert(AIRPORTS_TABLE_NAME, null, values);

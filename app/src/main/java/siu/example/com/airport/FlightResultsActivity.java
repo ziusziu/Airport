@@ -15,18 +15,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.SearchView;
 import android.widget.AdapterView;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
 public class FlightResultsActivity extends AppCompatActivity {
     private static final String TAG = FlightResultsActivity.class.getSimpleName();
-    protected static final String INTENT_DETAILED_KEY = "detailed_id";
+
     private static AirportsSQLiteHelper mAirportDb;
 
     private static CursorAdapter mCursorAdapter;
-    private static ListView mListView;
+    protected static ListView mListView;
 
 
     @Override
@@ -38,12 +37,11 @@ public class FlightResultsActivity extends AppCompatActivity {
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
 
         Intent receivedIntent = getIntent();
-        String[] searchTerms = receivedIntent.getStringArrayExtra(MainActivity.INTENT_KEY);
-
+        String[] searchTerms = receivedIntent.getStringArrayExtra(Utils.INTENT_SEARCH_KEY);
 
         String searchTerm = PreferenceManager.getDefaultSharedPreferences(FlightResultsActivity.this)
-                .getString(MainActivity.SHARED_PREFERENCES_SEARCHTERM, "California");
-        Log.d(TAG,"==================>"+ searchTerm);
+                .getString(Utils.SHARED_PREFERENCES_SEARCHTERM, "California");
+        Log.d(TAG, "==================>" + searchTerm);
 
 
         if(searchTerms != null) {
@@ -52,7 +50,7 @@ public class FlightResultsActivity extends AppCompatActivity {
             handleMenuSearchIntent(getIntent());
         }
 
-        onItemClick();
+        Utils.onItemClickToDetail(FlightResultsActivity.this, getApplicationContext(), mListView);
 
     }
 
@@ -60,13 +58,13 @@ public class FlightResultsActivity extends AppCompatActivity {
     protected void onResume() {
 
         String searchTerm = PreferenceManager.getDefaultSharedPreferences(FlightResultsActivity.this)
-                .getString(MainActivity.SHARED_PREFERENCES_SEARCHTERM, "California");
+                .getString(Utils.SHARED_PREFERENCES_SEARCHTERM, "California");
         Log.d(TAG,"==================>"+ searchTerm);
 
         if(searchTerm != null) {
             showSearchResults(searchTerm);
         }
-        onItemClick();
+        Utils.onItemClickToDetail(FlightResultsActivity.this, getApplicationContext(), mListView);
         super.onResume();
     }
 
@@ -122,17 +120,4 @@ public class FlightResultsActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.airport_listView);
         mListView.setAdapter(mCursorAdapter);
     }
-
-
-    private void onItemClick(){
-        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(FlightResultsActivity.this, DetailedActivity.class);
-                intent.putExtra(INTENT_DETAILED_KEY, id);
-                startActivity(intent);
-            }
-        });
-    }
-
 }

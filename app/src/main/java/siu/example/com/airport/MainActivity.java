@@ -6,7 +6,6 @@ import android.database.Cursor;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -19,14 +18,11 @@ import android.widget.TextView;
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = MainActivity.class.getSimpleName();
-    protected static final String INTENT_KEY = "search_terms";
-    protected static final String SHARED_PREFERENCES_SEARCHTERM = "shared_pref_search_term";
+
 
     private static AirportsSQLiteHelper mAirportDb;
 
     private EditText mNameEditText;
-    private EditText mCityEditText;
-    private EditText mStateEditText;
     private Button mFligthSeachButton;
     private ListView mFavoritesListView;
     private CursorAdapter mFavoritesCursorAdapter;
@@ -42,13 +38,12 @@ public class MainActivity extends AppCompatActivity {
         setViews();
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
 
+        //mAirportDb.deleteAll();
         //insertAirportData();
 
         onSearchButtonClick();
 
-
-
-        onItemClick();
+        Utils.onItemClickToDetail(MainActivity.this, getApplicationContext(), mFavoritesListView);
 
     }
 
@@ -76,31 +71,38 @@ public class MainActivity extends AppCompatActivity {
 
                 PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
                         .edit()
-                        .putString(SHARED_PREFERENCES_SEARCHTERM, searchTerms[0])
+                        .putString(Utils.SHARED_PREFERENCES_SEARCHTERM, searchTerms[0])
                         .commit();
 
-
                 Intent mFlightResultsIntent = new Intent(MainActivity.this, FlightResultsActivity.class);
-                mFlightResultsIntent.putExtra(INTENT_KEY, searchTerms);
+                mFlightResultsIntent.putExtra(Utils.INTENT_SEARCH_KEY, searchTerms);
                 startActivity(mFlightResultsIntent);
             }
         });
     }
 
     private static void insertAirportData(){
+        Airport sf = new Airport("San Francisco International Airport", 37.618763, -122.3823531, "San Francisco International Airport PO Box 8097", "San Francisco", "California", 94128, "San Francisco International Airport is an international airport 13 miles south of downtown San Francisco, California, United States, near Millbrae and San Bruno in unincorporated San Mateo County.", "false");
+        Airport oakland = new Airport("Oakland International Airport", 37.711786, -122.220581, "1 Airport Dr", "Oakland", "California", 94621, "Oakland International Airport is five miles south of downtown Oakland, in Alameda County, California. It is owned by the Port of Oakland. It is one of three international airports in the San Francisco Bay Area.", "false");
+        Airport hayward = new Airport("Hayward Executive Airport", 37.658047, -122.121785, "20301 Skywest Dr", "Hayward", "Californai", 94541, "Hayward Executive Airport is a city owned public airport two miles west of downtown Hayward, in Alameda County, California. The National Plan of Integrated Airport Systems for 2011–2015 categorized it as a reliever airport", "false");
+        Airport sanCarlos = new Airport("San Carlos Airport", 37.513498, -122.250624, "620 Airport Way", "San Carlos", "California", 94070, "San Carlos Airport is two miles northeast of San Carlos, California, in San Mateo County, California. The FAA's National Plan of Integrated Airport Systems classifies San Carlos as a reliever airport for San Francisco International Airport.", "false");
+        Airport halfMoonBay = new Airport("Half Moon Bay Airport", 37.512259, -122.496414, "9850 Cabrillo Hwy", "Half Moon Bay", "California", 94019, "Eddie Andreini Sr. Airfield is a public airport in San Mateo County, six miles northwest of Half Moon Bay, California. The airport is on the Pacific Coast, south of San Francisco", "false");
+        Airport paloAlto = new Airport("Palo Alto Airport", 37.454724, -122.110723, "1925 Embarcadero Rd.", "Palo Alto", "California", 94303, "Palo Alto Airport is a general aviation airport in the city of Palo Alto in Santa Clara County, California, USA, near the south end of San Francisco Bay on the western shore.", "false");
+        Airport sanJose = new Airport("Mineta San Jose International Airport", 37.363332, -121.928996, "1701 Airport Blvd", "San Jose", "California", 95110, "Norman Y. Mineta San José International Airport is a city-owned public airport in San Jose, Santa Clara County, California", "false");
+        Airport livermore = new Airport("Livermore Municipal Airport", 37.695737, -121.818811, "636 Terminal Cir", "Livermore", "California", 94551, "Livermore Municipal Airport is in Livermore, California, USA, east of San Francisco Bay. The airport is three miles northwest of the downtown area. Near the 650-acre airport are the Water Reclamation Plant and the Las Positas Golf Course.", "false");
 
-        mAirportDb.insertAirport("San Francisco International Airport", 37.618763, -122.3823531, "San Francisco International Airport PO Box 8097", "San Francisco", "California", 94128, "San Francisco International Airport is an international airport 13 miles south of downtown San Francisco, California, United States, near Millbrae and San Bruno in unincorporated San Mateo County.", "false");
-        mAirportDb.insertAirport("Oakland International Airport", 37.711786, -122.220581, "1 Airport Dr", "Oakland", "California", 94621, "Oakland International Airport is five miles south of downtown Oakland, in Alameda County, California. It is owned by the Port of Oakland. It is one of three international airports in the San Francisco Bay Area.", "false");
-        mAirportDb.insertAirport("Hayward Executive Airport", 37.658047, -122.121785, "20301 Skywest Dr", "Hayward", "Californai", 94541, "Hayward Executive Airport is a city owned public airport two miles west of downtown Hayward, in Alameda County, California. The National Plan of Integrated Airport Systems for 2011–2015 categorized it as a reliever airport", "false");
-        mAirportDb.insertAirport("San Carlos Airport", 37.513498, -122.250624, "620 Airport Way", "San Carlos", "California", 94070, "San Carlos Airport is two miles northeast of San Carlos, California, in San Mateo County, California. The FAA's National Plan of Integrated Airport Systems classifies San Carlos as a reliever airport for San Francisco International Airport.", "false");
-        mAirportDb.insertAirport("Half Moon Bay Airport", 37.512259, -122.496414, "9850 Cabrillo Hwy", "Half Moon Bay", "California", 94019, "Eddie Andreini Sr. Airfield is a public airport in San Mateo County, six miles northwest of Half Moon Bay, California. The airport is on the Pacific Coast, south of San Francisco", "false");
-        mAirportDb.insertAirport("Palo Alto Airport", 37.454724, -122.110723, "1925 Embarcadero Rd.", "Palo Alto", "California", 94303, "Palo Alto Airport is a general aviation airport in the city of Palo Alto in Santa Clara County, California, USA, near the south end of San Francisco Bay on the western shore.", "false");
-        mAirportDb.insertAirport("Mineta San Jose International Airport", 37.363332, -121.928996, "1701 Airport Blvd", "San Jose", "California", 95110, "Norman Y. Mineta San José International Airport is a city-owned public airport in San Jose, Santa Clara County, California", "false");
-        mAirportDb.insertAirport("Livermore Municipal Airport", 37.695737, -121.818811, "636 Terminal Cir", "Livermore", "California", 94551, "Livermore Municipal Airport is in Livermore, California, USA, east of San Francisco Bay. The airport is three miles northwest of the downtown area. Near the 650-acre airport are the Water Reclamation Plant and the Las Positas Golf Course.", "false");
+        mAirportDb.insertAirport(sf);
+        mAirportDb.insertAirport(oakland);
+        mAirportDb.insertAirport(hayward);
+        mAirportDb.insertAirport(sanCarlos);
+        mAirportDb.insertAirport(halfMoonBay);
+        mAirportDb.insertAirport(paloAlto);
+        mAirportDb.insertAirport(sanJose);
+        mAirportDb.insertAirport(livermore);
     }
 
     private void displayFavorites(){
-        Cursor cursor = mAirportDb.getFavorites();
+        Cursor cursor = mAirportDb.getFavoriteAirports();
 
         mFavoritesCursorAdapter = new CursorAdapter(getApplicationContext(), cursor, 0) {
             @Override
@@ -116,17 +118,6 @@ public class MainActivity extends AppCompatActivity {
         };
 
         mFavoritesListView.setAdapter(mFavoritesCursorAdapter);
-    }
-
-    private void onItemClick(){
-        mFavoritesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(MainActivity.this, DetailedActivity.class);
-                intent.putExtra(FlightResultsActivity.INTENT_DETAILED_KEY, id);
-                startActivity(intent);
-            }
-        });
     }
 
 }
