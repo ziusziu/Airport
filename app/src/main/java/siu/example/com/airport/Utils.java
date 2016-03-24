@@ -20,7 +20,8 @@ public class Utils {
     protected static final String ADD_TO_FAVORITES = "true";
     protected static final String REMOVE_FROM_FAVORITES = "false";
 
-    protected static final String FAB_BUTTON_COLOR = "#558B2F";
+    //protected static final String FAB_BUTTON_COLOR = "#558B2F";
+    protected static final String FAB_BUTTON_COLOR = "#00C853";
 
     protected static void onItemClickToDetail(final Activity activity,final Context context, ListView currentListView){
         currentListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {

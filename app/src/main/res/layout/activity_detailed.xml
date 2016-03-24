@@ -20,13 +20,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="200dp"
-            android:text="Map_Filler"/>
+            android:text="Map_Filler"
+            android:layout_weight=".25"/>
+
 
         <ListView
             android:id="@+id/airport_detail_listView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></ListView>
-
+            android:layout_height="wrap_content"
+            android:layout_weight="1"></ListView>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
@@ -41,5 +43,5 @@
         app:fabSize="mini"
         app:backgroundTint="#68EFAD"/>
 
-    <!--#A2FFC5-->
+    <!--#A2FFC5 #558B2F-->
 </android.support.design.widget.CoordinatorLayout>

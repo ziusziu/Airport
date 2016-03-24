@@ -1,23 +1,18 @@
 package siu.example.com.airport;
 
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toolbar;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -30,6 +25,7 @@ public class MainActivity extends AppCompatActivity {
     private Button mFligthSeachButton;
     private ListView mFavoritesListView;
     private CursorAdapter mFavoritesCursorAdapter;
+    private TextView mFavTitleTextView;
 
     //TODO Add a background image
 
@@ -68,6 +64,7 @@ public class MainActivity extends AppCompatActivity {
         mNameEditText = (EditText)findViewById(R.id.main_name_editText);
         mFligthSeachButton = (Button)findViewById(R.id.main_flightInput_search_button);
         mFavoritesListView = (ListView)findViewById(R.id.main_favorites_listView);
+        mFavTitleTextView = (TextView)findViewById(R.id.main_favoriteTitle_TextView);
     }
 
     private void onSearchButtonClick(){
@@ -112,6 +109,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayFavorites(){
         Cursor cursor = mAirportDb.getFavoriteAirports();
+        setTextViewVisibility(cursor);
 
         mFavoritesCursorAdapter = new CursorAdapter(getApplicationContext(), cursor, 0) {
             @Override
@@ -128,5 +126,14 @@ public class MainActivity extends AppCompatActivity {
 
         mFavoritesListView.setAdapter(mFavoritesCursorAdapter);
     }
+
+    private void setTextViewVisibility(Cursor cursor){
+        if(cursor.getCount() != 0){
+            mFavTitleTextView.setVisibility(mFavTitleTextView.VISIBLE);
+        }else if (cursor.getCount() == 0){
+            mFavTitleTextView.setVisibility(mFavTitleTextView.INVISIBLE);
+        }
+    }
+
 
 }

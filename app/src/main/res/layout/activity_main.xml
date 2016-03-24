@@ -26,13 +26,26 @@ Accent - Green  A200 #68EFAD
         android:id="@+id/main_flightInput_search_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:background="@color/colorAccent"
+        android:layout_centerHorizontal="true"
         android:layout_below="@id/main_name_editText"
         android:text="Search!"/>
 
+    <TextView
+        android:id="@+id/main_favoriteTitle_TextView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textSize="25sp"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@id/main_flightInput_search_button"
+        android:text="Favorites:"
+        android:visibility="invisible"/>
+
+    
     <ListView
         android:id="@+id/main_favorites_listView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/main_flightInput_search_button"></ListView>
+        android:layout_below="@id/main_favoriteTitle_TextView"></ListView>
 
 </RelativeLayout>

@@ -82,7 +82,7 @@ public class DetailedActivity extends AppCompatActivity {
                         cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_DESCRIPTION)),
                         cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_FAVORITE)));
 
-                airportNameDetailedTextView.setText("Name: "+ airportResult.getName());
+                airportNameDetailedTextView.setText(airportResult.getName());
                 airportLatitudeDetailedTextView.setText("Latitude: "+ airportResult.getLatitude());
                 airportLongitudeDetailedTextView.setText("Longitude: "+ airportResult.getLongitude());
                 airportAddressDetailedTextView.setText("Address: "+ airportResult.getAddress());
