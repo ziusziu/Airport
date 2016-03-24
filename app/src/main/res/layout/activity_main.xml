@@ -32,7 +32,7 @@ Accent - Green  A200 #68EFAD
             android:layout_height="wrap_content"
             android:minWidth="300dp"
             android:layout_weight=".75"
-            android:hint="Airport Name"/>
+            android:hint="Airport Name, City or State"/>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/main_flightInput_search_fab_button"

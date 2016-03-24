@@ -1,5 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <android.support.design.widget.CoordinatorLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
@@ -7,28 +6,39 @@
     android:layout_height="match_parent"
     android:layout_width="match_parent">
 
+
     <LinearLayout
         android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:paddingBottom="@dimen/activity_vertical_margin"
         android:paddingLeft="@dimen/activity_horizontal_margin"
         android:paddingRight="@dimen/activity_horizontal_margin"
         android:paddingTop="@dimen/activity_vertical_margin"
+        android:weightSum="1"
         tools:context="siu.example.com.airport.DetailedActivity">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="200dp"
-            android:text="Map_Filler"
-            android:layout_weight=".25"/>
+
+        <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:id="@+id/map"
+            android:name="com.google.android.gms.maps.SupportMapFragment"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.99"
+            tools:context="siu.example.com.airport.DetailedActivity" />
 
 
         <ListView
             android:id="@+id/airport_detail_listView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"></ListView>
+            android:alpha="0.75"
+            android:layout_weight="0.01"
+            android:background="@color/maps"
+            ></ListView>
+
+
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
