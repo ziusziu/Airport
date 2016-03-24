@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingBottom="@dimen/activity_vertical_margin"
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
@@ -16,20 +17,37 @@ Secondary        700 #7A1EA1
 Accent - Green  A200 #68EFAD
 -->
 
-    <EditText
-        android:id="@+id/main_name_editText"
+    <LinearLayout
+        android:id="@+id/search_bar_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="Airport Name"/>
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:layout_gravity="center_horizontal"
+        android:weightSum="1">
 
-    <Button
-        android:id="@+id/main_flightInput_search_button"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:background="@color/colorAccent"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/main_name_editText"
-        android:text="Search!"/>
+        <EditText
+            android:id="@+id/main_name_editText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:minWidth="300dp"
+            android:layout_weight=".75"
+            android:hint="Airport Name"/>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/main_flightInput_search_fab_button"
+            android:baselineAlignBottom="true"
+            android:layout_width="35dp"
+            android:layout_height="35dp"
+            android:layout_margin="5dp"
+            android:layout_marginStart="5dp"
+            android:scaleType="fitCenter"
+            android:layout_gravity="end"
+            android:src="@android:drawable/ic_menu_search"
+            app:fabSize="mini" />
+
+    </LinearLayout>
+
 
     <TextView
         android:id="@+id/main_favoriteTitle_TextView"
@@ -37,7 +55,7 @@ Accent - Green  A200 #68EFAD
         android:layout_height="wrap_content"
         android:textSize="25sp"
         android:textColor="@color/colorPrimaryDark"
-        android:layout_below="@id/main_flightInput_search_button"
+        android:layout_below="@id/search_bar_layout"
         android:text="Favorites:"
         android:visibility="invisible"/>
 

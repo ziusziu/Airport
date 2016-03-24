@@ -83,13 +83,13 @@ public class DetailedActivity extends AppCompatActivity {
                         cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_FAVORITE)));
 
                 airportNameDetailedTextView.setText(airportResult.getName());
-                airportLatitudeDetailedTextView.setText("Latitude: "+ airportResult.getLatitude());
-                airportLongitudeDetailedTextView.setText("Longitude: "+ airportResult.getLongitude());
-                airportAddressDetailedTextView.setText("Address: "+ airportResult.getAddress());
-                airportCityDetailedTextView.setText("City: "+ airportResult.getCity());
-                airportStateDetailedTextView.setText("State: "+ airportResult.getState());
-                airportZipDetailedTextView.setText("Zip: "+ airportResult.getZip());
-                airportDescriptionDetailedTextView.setText("Description: "+ airportResult.getDescription());
+                airportLatitudeDetailedTextView.setText(Double.toString(airportResult.getLatitude()));
+                airportLongitudeDetailedTextView.setText(Double.toString(airportResult.getLongitude()));
+                airportAddressDetailedTextView.setText(airportResult.getAddress());
+                airportCityDetailedTextView.setText(airportResult.getCity());
+                airportStateDetailedTextView.setText(airportResult.getState());
+                airportZipDetailedTextView.setText(Integer.toString(airportResult.getZip()));
+                airportDescriptionDetailedTextView.setText(airportResult.getDescription());
             }
         };
 

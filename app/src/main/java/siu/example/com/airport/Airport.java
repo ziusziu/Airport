@@ -5,15 +5,15 @@ package siu.example.com.airport;
  */
 public class Airport {
 
-    String name;
-    Double latitude;
-    Double longitude;
-    String address;
-    String city;
-    String state;
-    Integer zip;
-    String description;
-    String favorite;
+    private String name;
+    private Double latitude;
+    private Double longitude;
+    private String address;
+    private String city;
+    private String state;
+    private Integer zip;
+    private String description;
+    private String favorite;
 
     public Airport(String name, Double latitude, Double longitude, String address,
                    String city, String state, Integer zip, String description, String favorite) {

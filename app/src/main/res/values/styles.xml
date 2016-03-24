@@ -8,4 +8,10 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <!-- Base Text Style -->
+    <style name="BaseTextTheme" parent="android:TextAppearance.DeviceDefault">
+        <item name="android:fontFamily">sans-serif-thin</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
 </resources>

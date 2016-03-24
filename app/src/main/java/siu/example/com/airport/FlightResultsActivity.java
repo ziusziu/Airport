@@ -1,9 +1,14 @@
 package siu.example.com.airport;
 
 import android.app.SearchManager;
+import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
+import android.graphics.PorterDuff;
+import android.graphics.drawable.Drawable;
+import android.media.Image;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -11,11 +16,13 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.SearchView;
 import android.widget.AdapterView;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -32,6 +39,7 @@ public class FlightResultsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+
         setContentView(R.layout.activity_flight_results);
 
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
@@ -44,9 +52,9 @@ public class FlightResultsActivity extends AppCompatActivity {
         Log.d(TAG, "==================>" + searchTerm);
 
 
-        if(searchTerms != null) {
+        if (searchTerms != null) {
             showSearchResults(searchTerm);
-        }else{
+        } else {
             handleMenuSearchIntent(getIntent());
         }
 
@@ -56,14 +64,6 @@ public class FlightResultsActivity extends AppCompatActivity {
 
     @Override
     protected void onResume() {
-
-        String searchTerm = PreferenceManager.getDefaultSharedPreferences(FlightResultsActivity.this)
-                .getString(Utils.SHARED_PREFERENCES_SEARCHTERM, "California");
-        Log.d(TAG,"==================>"+ searchTerm);
-
-        if(searchTerm != null) {
-            showSearchResults(searchTerm);
-        }
         Utils.onItemClickToDetail(FlightResultsActivity.this, getApplicationContext(), mListView);
         super.onResume();
     }
@@ -72,22 +72,44 @@ public class FlightResultsActivity extends AppCompatActivity {
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_options, menu);
+        MenuItem searchItem = menu.findItem(R.id.search);
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        SearchView searchView = (SearchView) searchItem.getActionView();
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
+
+        Drawable collapsedSearchIcon = searchItem.getIcon();
+        collapsedSearchIcon.setTint(Color.WHITE);
+        searchItem.setIcon(collapsedSearchIcon);
 
         return true;
     }
+
+
+//
+//    @Override
+//    public boolean onPrepareOptionsMenu(Menu menu) {
+//        int color = Color.parseColor(Utils.FAB_BUTTON_COLOR);
+//        Log.d(TAG, "finditeminmenu =======" + menu.findItem(R.id.search));
+//        Log.d(TAG, "GETiteminmenu =======" + menu.getItem(R.id.search));
+//
+//        MenuItem item = (MenuItem) findViewById(R.id.search);
+//        switch (item.getItemId()) {
+//            case R.id.search:
+//                item.getIcon().setTint(color);
+//        }
+//        return super.onPrepareOptionsMenu(menu);
+//    }
 
     @Override
     protected void onNewIntent(Intent intent) {
         handleMenuSearchIntent(intent);
     }
 
-    private void handleMenuSearchIntent(Intent intent){
+    private void handleMenuSearchIntent(Intent intent) {
         Log.d(TAG, "MENU SEARCH HANDLEINTENT=====");
-        if(Intent.ACTION_SEARCH.equals(intent.getAction())){
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
             String query = intent.getStringExtra(SearchManager.QUERY);
             Log.d(TAG, query);
             Cursor cursor = mAirportDb.menuSearchAirportsList(query);
@@ -101,7 +123,7 @@ public class FlightResultsActivity extends AppCompatActivity {
         }
     }
 
-    private void showSearchResults(String searchTerms){
+    private void showSearchResults(String searchTerms) {
         Cursor cursor = mAirportDb.searchAirportsList(searchTerms);
         mCursorAdapter = new CursorAdapter(getApplicationContext(), cursor, 0) {
             @Override

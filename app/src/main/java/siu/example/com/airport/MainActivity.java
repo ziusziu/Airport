@@ -3,12 +3,14 @@ package siu.example.com.airport;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Color;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.CursorAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -22,7 +24,7 @@ public class MainActivity extends AppCompatActivity {
     private static AirportsSQLiteHelper mAirportDb;
 
     private EditText mNameEditText;
-    private Button mFligthSeachButton;
+    private FloatingActionButton mFlightSearchFabButton;
     private ListView mFavoritesListView;
     private CursorAdapter mFavoritesCursorAdapter;
     private TextView mFavTitleTextView;
@@ -35,18 +37,21 @@ public class MainActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_main);
 
+        Log.d(TAG, "CONTEXT OF APP =======getBASECONTEXT   " + this.getBaseContext());
 
-
-
-
-
-        setViews();
+        initViews();
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
+
+
+        int color = Color.parseColor(Utils.FAB_BUTTON_COLOR);
+        mFlightSearchFabButton.setImageResource(R.drawable.icon_search);
+        mFlightSearchFabButton.setColorFilter(color);
+
 
         //mAirportDb.deleteAll();
         //insertAirportData();
 
-        onSearchButtonClick();
+        onFabSearchButtonClick();
 
         Utils.onItemClickToDetail(MainActivity.this, getApplicationContext(), mFavoritesListView);
 
@@ -60,15 +65,15 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void setViews(){
+    private void initViews(){
         mNameEditText = (EditText)findViewById(R.id.main_name_editText);
-        mFligthSeachButton = (Button)findViewById(R.id.main_flightInput_search_button);
+        mFlightSearchFabButton = (FloatingActionButton)findViewById(R.id.main_flightInput_search_fab_button);
         mFavoritesListView = (ListView)findViewById(R.id.main_favorites_listView);
         mFavTitleTextView = (TextView)findViewById(R.id.main_favoriteTitle_TextView);
     }
 
-    private void onSearchButtonClick(){
-        mFligthSeachButton.setOnClickListener(new View.OnClickListener() {
+    private void onFabSearchButtonClick(){
+        mFlightSearchFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String[] searchTerms = {
@@ -78,7 +83,8 @@ public class MainActivity extends AppCompatActivity {
                 PreferenceManager.getDefaultSharedPreferences(MainActivity.this)
                         .edit()
                         .putString(Utils.SHARED_PREFERENCES_SEARCHTERM, searchTerms[0])
-                        .commit();
+                        .apply();
+                        //.commit();
 
                 Intent mFlightResultsIntent = new Intent(MainActivity.this, FlightResultsActivity.class);
                 mFlightResultsIntent.putExtra(Utils.INTENT_SEARCH_KEY, searchTerms);
@@ -86,6 +92,8 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+
+
 
     private static void insertAirportData(){
         Airport sf = new Airport("San Francisco International Airport", 37.618763, -122.3823531, "San Francisco International Airport PO Box 8097", "San Francisco", "California", 94128, "San Francisco International Airport is an international airport 13 miles south of downtown San Francisco, California, United States, near Millbrae and San Bruno in unincorporated San Mateo County.", "false");
@@ -109,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void displayFavorites(){
         Cursor cursor = mAirportDb.getFavoriteAirports();
+
         setTextViewVisibility(cursor);
 
         mFavoritesCursorAdapter = new CursorAdapter(getApplicationContext(), cursor, 0) {
