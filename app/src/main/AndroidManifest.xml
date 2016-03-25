@@ -30,6 +30,7 @@ You can define the keys for the debug and release targets in src/debug/ and src/
             android:value="@string/google_maps_key" />
 
         <activity android:name=".MainActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Search Airports">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -39,6 +40,7 @@ You can define the keys for the debug and release targets in src/debug/ and src/
         </activity>
 
         <activity android:name=".FlightResultsActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Search Results"
             android:parentActivityName=".MainActivity"
             android:launchMode="singleTop">
@@ -53,6 +55,7 @@ You can define the keys for the debug and release targets in src/debug/ and src/
 
 
         <activity android:name=".DetailedActivity"
+            android:configChanges="keyboardHidden|orientation|screenSize"
             android:label="Airport Details"
             android:parentActivityName=".FlightResultsActivity">
 

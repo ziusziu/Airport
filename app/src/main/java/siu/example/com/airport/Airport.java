@@ -5,6 +5,7 @@ package siu.example.com.airport;
  */
 public class Airport {
 
+    //region Attributes
     private String name;
     private Double latitude;
     private Double longitude;
@@ -14,7 +15,9 @@ public class Airport {
     private Integer zip;
     private String description;
     private String favorite;
+    //endregion Attributes
 
+    //region Constructor
     public Airport(String name, Double latitude, Double longitude, String address,
                    String city, String state, Integer zip, String description, String favorite) {
         this.name = name;
@@ -27,7 +30,9 @@ public class Airport {
         this.description = description;
         this.favorite = favorite;
     }
+    //endregion Constructor
 
+    //region Setters and Getters
     public String getName() {
         return name;
     }
@@ -99,4 +104,5 @@ public class Airport {
     public void setFavorite(String favorite) {
         this.favorite = favorite;
     }
+    //endregion Setters and Getters
 }

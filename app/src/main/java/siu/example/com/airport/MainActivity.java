@@ -3,7 +3,6 @@ package siu.example.com.airport;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
-import android.graphics.Color;
 import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -18,52 +17,39 @@ import android.widget.TextView;
 
 public class MainActivity extends AppCompatActivity {
 
+    //region Private Variables
     private static final String TAG = MainActivity.class.getSimpleName();
-
-
     private static AirportsSQLiteHelper mAirportDb;
-
     private EditText mNameEditText;
     private FloatingActionButton mFlightSearchFabButton;
     private ListView mFavoritesListView;
     private CursorAdapter mFavoritesCursorAdapter;
     private TextView mFavTitleTextView;
-
-    //TODO Add a background image
+    //endregion Private Variables
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         setContentView(R.layout.activity_main);
 
         Log.d(TAG, "CONTEXT OF APP =======getBASECONTEXT   " + this.getBaseContext());
 
         initViews();
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
-
-
-        int color = Color.parseColor(Utils.FAB_BUTTON_COLOR);
-        mFlightSearchFabButton.setImageResource(R.drawable.icon_search);
-        mFlightSearchFabButton.setColorFilter(color);
-
-
         //mAirportDb.deleteAll();
-        //insertAirportData();
+        initSQLiteData();
 
+        Utils.setFabIconColor(mFlightSearchFabButton, Utils.FAB_BUTTON_COLOR);
         onFabSearchButtonClick();
 
         Utils.onItemClickToDetail(MainActivity.this, getApplicationContext(), mFavoritesListView);
-
     }
-
 
     @Override
     protected void onResume() {
         displayFavorites();
         super.onResume();
     }
-
 
     private void initViews(){
         mNameEditText = (EditText)findViewById(R.id.main_name_editText);
@@ -72,6 +58,10 @@ public class MainActivity extends AppCompatActivity {
         mFavTitleTextView = (TextView)findViewById(R.id.main_favoriteTitle_TextView);
     }
 
+    /**
+     * FAB starts intent to next activity with search results. Search terms inputted to EditText View
+     * will be stored and persists to other activities.
+     */
     private void onFabSearchButtonClick(){
         mFlightSearchFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -84,7 +74,6 @@ public class MainActivity extends AppCompatActivity {
                         .edit()
                         .putString(Utils.SHARED_PREFERENCES_SEARCHTERM, searchTerms[0])
                         .apply();
-                        //.commit();
 
                 Intent mFlightResultsIntent = new Intent(MainActivity.this, FlightResultsActivity.class);
                 mFlightResultsIntent.putExtra(Utils.INTENT_SEARCH_KEY, searchTerms);
@@ -93,8 +82,58 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
+    /**
+     * This function queries SQLite base and displays the airports that were add to favorites
+     */
+    private void displayFavorites(){
+        Cursor cursor = mAirportDb.getFavoriteAirports();
 
+        setTextViewVisibility(cursor, mFavTitleTextView);
 
+        mFavoritesCursorAdapter = new CursorAdapter(getApplicationContext(), cursor, 0) {
+            @Override
+            public View newView(Context context, Cursor cursor, ViewGroup parent) {
+                return getLayoutInflater().from(context).inflate(R.layout.favorites_adapter_items,parent,false);
+            }
+
+            @Override
+            public void bindView(View view, Context context, Cursor cursor) {
+                TextView favoriteTextView = (TextView)view.findViewById(R.id.favorites_item_textView);
+                favoriteTextView.setText(cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_NAME)));
+            }
+        };
+
+        mFavoritesListView.setAdapter(mFavoritesCursorAdapter);
+    }
+
+    /**
+     * TextView will become visible if cursor count is not equal to zero.
+     *
+     * @param cursor
+     * @param textView
+     */
+    private void setTextViewVisibility(Cursor cursor, TextView textView){
+        if(cursor.getCount() != 0){
+            textView.setVisibility(textView.VISIBLE);
+        }else if (cursor.getCount() == 0){
+            textView.setVisibility(textView.INVISIBLE);
+        }
+    }
+
+    /**
+     * Checks if Airport table is empty. Inserts data if empty
+      */
+    private void initSQLiteData(){
+        Cursor cursor = mAirportDb.getAll();
+        int numAirports = cursor.getCount();
+        if(numAirports == 0){
+            insertAirportData();
+        }
+    }
+
+    /**
+     * Insert Airport data to SQLite Airport Table
+     */
     private static void insertAirportData(){
         Airport sf = new Airport("San Francisco International Airport", 37.618763, -122.3823531, "San Francisco International Airport PO Box 8097", "San Francisco", "California", 94128, "San Francisco International Airport is an international airport 13 miles south of downtown San Francisco, California, United States, near Millbrae and San Bruno in unincorporated San Mateo County.", "false");
         Airport oakland = new Airport("Oakland International Airport", 37.711786, -122.220581, "1 Airport Dr", "Oakland", "California", 94621, "Oakland International Airport is five miles south of downtown Oakland, in Alameda County, California. It is owned by the Port of Oakland. It is one of three international airports in the San Francisco Bay Area.", "false");
@@ -115,34 +154,6 @@ public class MainActivity extends AppCompatActivity {
         mAirportDb.insertAirport(livermore);
     }
 
-    private void displayFavorites(){
-        Cursor cursor = mAirportDb.getFavoriteAirports();
-
-        setTextViewVisibility(cursor);
-
-        mFavoritesCursorAdapter = new CursorAdapter(getApplicationContext(), cursor, 0) {
-            @Override
-            public View newView(Context context, Cursor cursor, ViewGroup parent) {
-                return getLayoutInflater().from(context).inflate(R.layout.favorites_adapter_items,parent,false);
-            }
-
-            @Override
-            public void bindView(View view, Context context, Cursor cursor) {
-                TextView favoriteTextView = (TextView)view.findViewById(R.id.favorites_item_textView);
-                favoriteTextView.setText(cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_NAME)));
-            }
-        };
-
-        mFavoritesListView.setAdapter(mFavoritesCursorAdapter);
-    }
-
-    private void setTextViewVisibility(Cursor cursor){
-        if(cursor.getCount() != 0){
-            mFavTitleTextView.setVisibility(mFavTitleTextView.VISIBLE);
-        }else if (cursor.getCount() == 0){
-            mFavTitleTextView.setVisibility(mFavTitleTextView.INVISIBLE);
-        }
-    }
 
 
 }

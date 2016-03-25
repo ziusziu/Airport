@@ -1,14 +1,11 @@
 package siu.example.com.airport;
 
 import android.app.SearchManager;
-import android.content.ClipData;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
-import android.media.Image;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -20,9 +17,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.SearchView;
-import android.widget.AdapterView;
 import android.widget.CursorAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -30,27 +25,19 @@ public class FlightResultsActivity extends AppCompatActivity {
     private static final String TAG = FlightResultsActivity.class.getSimpleName();
 
     private static AirportsSQLiteHelper mAirportDb;
-
     private static CursorAdapter mCursorAdapter;
     protected static ListView mListView;
-
+    private static String[] searchTerms;
+    private static String searchTerm;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
         setContentView(R.layout.activity_flight_results);
 
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
 
-        Intent receivedIntent = getIntent();
-        String[] searchTerms = receivedIntent.getStringArrayExtra(Utils.INTENT_SEARCH_KEY);
-
-        String searchTerm = PreferenceManager.getDefaultSharedPreferences(FlightResultsActivity.this)
-                .getString(Utils.SHARED_PREFERENCES_SEARCHTERM, "California");
-        Log.d(TAG, "==================>" + searchTerm);
-
+        getSearchTerms();
 
         if (searchTerms != null) {
             showSearchResults(searchTerm);
@@ -70,6 +57,21 @@ public class FlightResultsActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        initMenuBar(menu);
+        return true;
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleMenuSearchIntent(intent);
+    }
+
+
+    /**
+     * Initializes search Menu in Action Bar
+     * @param menu
+     */
+    private void initMenuBar(Menu menu){
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_options, menu);
         MenuItem searchItem = menu.findItem(R.id.search);
@@ -82,47 +84,25 @@ public class FlightResultsActivity extends AppCompatActivity {
         Drawable collapsedSearchIcon = searchItem.getIcon();
         collapsedSearchIcon.setTint(Color.WHITE);
         searchItem.setIcon(collapsedSearchIcon);
-
-        return true;
     }
 
 
-//
-//    @Override
-//    public boolean onPrepareOptionsMenu(Menu menu) {
-//        int color = Color.parseColor(Utils.FAB_BUTTON_COLOR);
-//        Log.d(TAG, "finditeminmenu =======" + menu.findItem(R.id.search));
-//        Log.d(TAG, "GETiteminmenu =======" + menu.getItem(R.id.search));
-//
-//        MenuItem item = (MenuItem) findViewById(R.id.search);
-//        switch (item.getItemId()) {
-//            case R.id.search:
-//                item.getIcon().setTint(color);
-//        }
-//        return super.onPrepareOptionsMenu(menu);
-//    }
+    /**
+     * Store search term passed from MainActivity
+     */
+    private void getSearchTerms(){
+        Intent receivedIntent = getIntent();
+        searchTerms = receivedIntent.getStringArrayExtra(Utils.INTENT_SEARCH_KEY);
 
-    @Override
-    protected void onNewIntent(Intent intent) {
-        handleMenuSearchIntent(intent);
+        searchTerm = PreferenceManager.getDefaultSharedPreferences(FlightResultsActivity.this)
+                .getString(Utils.SHARED_PREFERENCES_SEARCHTERM, "California");
+        Log.d(TAG, "==================>" + searchTerm);
     }
 
-    private void handleMenuSearchIntent(Intent intent) {
-        Log.d(TAG, "MENU SEARCH HANDLEINTENT=====");
-        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
-            String query = intent.getStringExtra(SearchManager.QUERY);
-            Log.d(TAG, query);
-            Cursor cursor = mAirportDb.menuSearchAirportsList(query);
-            mCursorAdapter.swapCursor(cursor);
-
-            mListView = (ListView) findViewById(R.id.airport_listView);
-            mListView.setAdapter(mCursorAdapter);
-
-            mCursorAdapter.changeCursor(cursor);
-            mCursorAdapter.notifyDataSetChanged();
-        }
-    }
-
+    /**
+     * Performs query with persisted searchTerms and updates cursorAdapter with results
+     * @param searchTerms
+     */
     private void showSearchResults(String searchTerms) {
         Cursor cursor = mAirportDb.searchAirportsList(searchTerms);
         mCursorAdapter = new CursorAdapter(getApplicationContext(), cursor, 0) {
@@ -142,4 +122,25 @@ public class FlightResultsActivity extends AppCompatActivity {
         mListView = (ListView) findViewById(R.id.airport_listView);
         mListView.setAdapter(mCursorAdapter);
     }
+
+    /**
+     * Handle search queries from Action Bar and repopulates search items in adapter
+     * @param intent
+     */
+    private void handleMenuSearchIntent(Intent intent) {
+        Log.d(TAG, "MENU SEARCH HANDLEINTENT=====");
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            Log.d(TAG, query);
+            Cursor cursor = mAirportDb.menuSearchAirportsList(query);
+            mCursorAdapter.swapCursor(cursor);
+
+            mListView = (ListView) findViewById(R.id.airport_listView);
+            mListView.setAdapter(mCursorAdapter);
+
+            mCursorAdapter.changeCursor(cursor);
+            mCursorAdapter.notifyDataSetChanged();
+        }
+    }
+
 }

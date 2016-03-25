@@ -27,13 +27,18 @@ import com.google.android.gms.maps.model.MarkerOptions;
 public class DetailedActivity extends AppCompatActivity implements OnMapReadyCallback {
     private static final String TAG = DetailedActivity.class.getSimpleName();
 
+    private static long mId;
+    private GoogleMap mMap;
+    private static Airport mAirportResult;
+
+    //region Dynamic Items Instantiations
     private static ListView mDeatilListView;
     protected static AirportsSQLiteHelper mAirportDb;
     protected static CursorAdapter mDetailedCursorAdapter;
     private static FloatingActionButton mFavFabButton;
-    private static Airport mAirportResult;
-    private static long mId;
+    //endregion Dynamic Items Instantiations
 
+    //region TextView Instantiations
     private TextView mAirportNameDetailedTextView;
     private TextView mAirportLatitudeDetailedTextView;
     private TextView mAirportLongitudeDetailedTextView;
@@ -42,19 +47,16 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
     private TextView mAirportStateDetailedTextView;
     private TextView mAirportZipDetailedTextView;
     private TextView mAirportDescriptionDetailedTextView;
-
-
-    private GoogleMap mMap;
+    //endregion TextView Instantiations
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detailed);
 
-        mFavFabButton = (FloatingActionButton)findViewById(R.id.detailed_favorite_fab_button);
+        initViews();
 
-        Intent detailedIntent = getIntent();
-        mId = detailedIntent.getLongExtra(Utils.INTENT_DETAILED_KEY, -1);
+        getQueryAirportId();
 
         mAirportDb = AirportsSQLiteHelper.getInstance(getApplicationContext());
 
@@ -66,6 +68,10 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
 
         getFavButtonStatus(mId);
 
+    }
+
+    private void initViews(){
+        mFavFabButton = (FloatingActionButton)findViewById(R.id.detailed_favorite_fab_button);
     }
 
     private void showDetailedSearchResults(long id){
@@ -160,6 +166,13 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
+    private void initGoogleMaps(){
+        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
+                .findFragmentById(R.id.map);
+        mapFragment.getMapAsync(this);
+
+    }
+
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -185,11 +198,9 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(airport, zoomLevel));
     }
 
-    private void initGoogleMaps(){
-
-        SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
-                .findFragmentById(R.id.map);
-        mapFragment.getMapAsync(this);
-
+    private void getQueryAirportId(){
+        Intent detailedIntent = getIntent();
+        mId = detailedIntent.getLongExtra(Utils.INTENT_DETAILED_KEY, -1);
     }
+
 }
