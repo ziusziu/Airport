@@ -1,15 +1,21 @@
 package siu.example.com.airport;
 
+import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CursorAdapter;
@@ -70,10 +76,66 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
 
     }
 
+    /**
+     * Initialize views
+     */
     private void initViews(){
         mFavFabButton = (FloatingActionButton)findViewById(R.id.detailed_favorite_fab_button);
     }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        initMenuBar(menu);
+        return true;
+    }
+
+    /**
+     * Initializes search Menu in Action Bar
+     * @param menu
+     */
+    private void initMenuBar(Menu menu){
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_options_detailed_activity, menu);
+        MenuItem homeItem = menu.findItem(R.id.home);
+
+        Drawable collapsedSearchIcon = homeItem.getIcon();
+        collapsedSearchIcon.setTint(Color.WHITE);
+        homeItem.setIcon(collapsedSearchIcon);
+    }
+
+    /**
+     * Handle actions to Menu Bar Items
+     * @param item
+     * @return boolean
+     */
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        String menuItemName = String.valueOf(item.getTitle());
+        Log.d(TAG, "MENU ITEM NAME" + menuItemName);
+
+        switch(menuItemName){
+            case "Home":
+                Intent intent = new Intent(DetailedActivity.this, MainActivity.class);
+                startActivity(intent);
+                break;
+            default:
+                return false;
+        }
+        return false;
+    }
+
+    /**
+     * Get id to query airports from intents
+     */
+    private void getQueryAirportId(){
+        Intent detailedIntent = getIntent();
+        mId = detailedIntent.getLongExtra(Utils.INTENT_DETAILED_KEY, -1);
+    }
+
+    /**
+     * Query airports table for one airport
+     * @param id
+     */
     private void showDetailedSearchResults(long id){
         Cursor cursor = mAirportDb.searchAirport(id);
         mAirportResult = getAirportInfo(cursor);
@@ -95,6 +157,11 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         mDeatilListView.setAdapter(mDetailedCursorAdapter);
     }
 
+    /**
+     * Store column data to Airport object
+     * @param cursor
+     * @return airportData
+     */
     private static Airport getAirportInfo(Cursor cursor){
         cursor.moveToFirst();
         Airport airportData = new Airport(
@@ -110,7 +177,10 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         return airportData;
     }
 
-
+    /**
+     * Initialze textViews
+     * @param view
+     */
     private void initDetailedTextView(View view){
         mAirportNameDetailedTextView = (TextView) view.findViewById(R.id.airport_detailedName_textview);
         mAirportLatitudeDetailedTextView = (TextView)view.findViewById(R.id.airport_detailedLatitude_textview);
@@ -122,7 +192,9 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         mAirportDescriptionDetailedTextView = (TextView)view.findViewById(R.id.airport_detailedDescription_textview);
     }
 
-
+    /**
+     * Set TextViews with data
+     */
     private void setDetailedTextView(){
         mAirportNameDetailedTextView.setText(mAirportResult.getName());
         mAirportLatitudeDetailedTextView.setText(Double.toString(mAirportResult.getLatitude()));
@@ -134,7 +206,10 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         mAirportDescriptionDetailedTextView.setText(mAirportResult.getDescription());
     }
 
-
+    /**
+     * Toggle and table favorites column on click
+     * @param id
+     */
     private void onFavFabButtonClick(final long id){
         mFavFabButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -145,6 +220,10 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         });
     }
 
+    /**
+     * Edit FAB button based of airport favorite status
+     * @param id
+     */
     private static void getFavButtonStatus(long id){
         Cursor cursor = mAirportDb.searchAirport(id);
         cursor.moveToFirst();
@@ -166,6 +245,9 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         }
     }
 
+    /**
+     * Initialize google maps
+     */
     private void initGoogleMaps(){
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
@@ -198,9 +280,5 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(airport, zoomLevel));
     }
 
-    private void getQueryAirportId(){
-        Intent detailedIntent = getIntent();
-        mId = detailedIntent.getLongExtra(Utils.INTENT_DETAILED_KEY, -1);
-    }
 
 }
