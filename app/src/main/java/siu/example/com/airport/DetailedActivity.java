@@ -1,16 +1,13 @@
 package siu.example.com.airport;
 
-import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -274,7 +271,7 @@ public class DetailedActivity extends AppCompatActivity implements OnMapReadyCal
 
         float zoomLevel = 13;
 
-        // Add a marker in Sydney and move the camera
+        // Add a marker to airport and move the camera
         LatLng airport = new LatLng(latitude, longitude);
         mMap.addMarker(new MarkerOptions().position(airport).title(name));
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(airport, zoomLevel));

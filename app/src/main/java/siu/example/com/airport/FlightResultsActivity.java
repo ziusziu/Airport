@@ -18,8 +18,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v7.widget.SearchView;
 import android.widget.CursorAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 public class FlightResultsActivity extends AppCompatActivity {
     private static final String TAG = FlightResultsActivity.class.getSimpleName();
@@ -114,8 +117,18 @@ public class FlightResultsActivity extends AppCompatActivity {
             @Override
             public void bindView(View view, Context context, Cursor cursor) {
                 TextView airportNameTextView = (TextView) view.findViewById(R.id.airport_name_textview);
+                TextView airportCityTextView = (TextView) view.findViewById(R.id.airport_city_textview);
+
+                ImageView imageView = (ImageView) view.findViewById(R.id.airport_imageView);
 
                 airportNameTextView.setText(cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_NAME)));
+                airportCityTextView.setText(cursor.getString(cursor.getColumnIndex(AirportsSQLiteHelper.COL_CITY)));
+
+                Picasso.with(context)
+                        .load(R.drawable.icon_search)
+                        .resize(100,100)
+                        .into(imageView);
+
             }
         };
 

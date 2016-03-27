@@ -18,7 +18,6 @@
         android:weightSum="1"
         tools:context="siu.example.com.airport.DetailedActivity">
 
-
         <fragment xmlns:android="http://schemas.android.com/apk/res/android"
             xmlns:tools="http://schemas.android.com/tools"
             android:id="@+id/map"
@@ -26,6 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_weight="0.99"
+            android:maxHeight="25dp"
             tools:context="siu.example.com.airport.DetailedActivity" />
 
 
